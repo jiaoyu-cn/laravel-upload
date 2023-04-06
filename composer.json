@@ -1,0 +1,19 @@
+{
+    "name": "githen/laravel-upload",
+    "description": "基于Dropzone为laravel提供上传支持",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Githen\\LaravelUpload\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "githen",
+            "email": "githen@foxmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
