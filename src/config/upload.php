@@ -11,16 +11,16 @@ return [
      * ]
      */
     'global' => [
-        'tmp' => 'uploads/tmp', //
-        'path' => 'uploads',
+        'tmp' => '/uploads/tmp', //
+        'path' => '/uploads',
         'name' => 'file',
         'auth' => ['auth']
     ],
 
     'img' => [
         'size' => 10, // MB
-        'ext' => ['.png', '.jpg', '.jpeg', '.zip'],
+        'ext' => ['.png', '.jpg', '.jpeg'],
         'resize' => [200,200],
-        'path' => 'uploads/'. date('Y/m/d'),
+        'path' => '/uploads/'. date('Y/m/d'),
     ]
 ];

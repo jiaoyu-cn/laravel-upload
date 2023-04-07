@@ -2,6 +2,7 @@
 namespace Githen\LaravelUpload;
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -25,6 +26,33 @@ class UploadProvider extends ServiceProvider
      */
     public function boot()
     {
+        // 文件移动
+        $this->app->singleton('jiaoyu.move', function (){
+            return function ($from, $to){
+                // 检测文件是否存在
+                if (!Storage::disk('localFile')->exists($from)){
+                    return ['code' => 1, 'message' => '上传文件不存在'];
+                }
+
+                // 获取文件名称
+                $fileInfo = pathinfo($from);
+
+                // 移动文件
+                Storage::disk('localFile')->move($from, $to.'/'.$fileInfo['basename']);
+
+                // 检测是否存在附件
+                $thumbPath = $fileInfo['dirname'] . '/';
+                $thumbFile = $fileInfo['filename'] .'_thumb.'.$fileInfo['extension'];
+                if (Storage::disk('localFile')->exists($thumbPath.$thumbFile)){
+                    Storage::disk('localFile')->move($thumbPath.$thumbFile, $to.'/'.$thumbFile);
+                }
+
+                return ['code' => 0, 'message' => '移动成功', 'path' => $to.'/'.$fileInfo['basename']];
+            };
+
+        });
+
+        // 请求路由
         Route::middleware('web')->post( 'jiaoyu/upload/{param}', '\Githen\LaravelUpload\Controllers\UploadController@upload')
             ->name('jiaoyu.upload'); // 文件上传
     }

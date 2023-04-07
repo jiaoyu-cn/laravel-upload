@@ -131,4 +131,19 @@ myDropzone = new uploadzone({
 |  dictRemoveFile  | 删除提示语     |         删除 |      |
 |  dictCancelUpload  | 取消提示语   |    取消     |    |
 
+## 临时目录迁移到正式目录
+如果上传的文件是放在临时目录`tmp`下，则在实际业务中，需要进行迁移文件到正式目录。可执行以下操作完成迁移操作。
+```php
+//app('jiaoyu.move') 以单例形貌注入，执行迁移操作
+// $from 文件地址
+// $to    需要迁移到的目录
+// 如果存在缩略图，一并迁移 
+$result = call_user_func(app('jiaoyu.move'), $from, $to);
 
+// 返回数据结构
+[
+    "code" => 0, // 0 成功 1失败
+    "message" => "成功", // 执行说明
+    "path" => '', // 新文件的目录，缩略图默认在文件名后加标识 _thumb
+]
+```
