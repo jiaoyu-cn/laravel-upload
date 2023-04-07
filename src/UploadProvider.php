@@ -25,11 +25,7 @@ class UploadProvider extends ServiceProvider
      */
     public function boot()
     {
-//        dd(Route::middleware('web'));
-//        dd(Route::POST( 'jiaoyu/upload', '\Githen\LaravelUpload\Controllers\UploadController@upload'));
         Route::middleware('web')->post( 'jiaoyu/upload/{param}', '\Githen\LaravelUpload\Controllers\UploadController@upload')
-            ->name('jiaoyu.upload'); // 文件上传
-        Route::middleware('web')->get( 'jiaoyu/upload/{param}', '\Githen\LaravelUpload\Controllers\UploadController@upload')
             ->name('jiaoyu.upload'); // 文件上传
     }
 
@@ -41,7 +37,7 @@ class UploadProvider extends ServiceProvider
     {
         // 发布配置文件
         $this->publishes([__DIR__.'/config/upload.php' => config_path('upload.php')]);
-//        $this->publishes([__DIR__.'/js/uploadzone.js' => public_path('app-assets/js/scripts/forms/uploadzone.js')]);
+        $this->publishes([__DIR__.'/js/uploadzone.js' => public_path('app-assets/js/scripts/forms/uploadzone.js')]);
     }
 
 }
