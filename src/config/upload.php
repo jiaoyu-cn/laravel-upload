@@ -18,7 +18,7 @@ return [
     ],
 
     'img' => [
-        'size' => 3, // MB
+        'size' => 10, // MB
         'ext' => ['.png', '.jpg', '.jpeg', '.zip'],
         'resize' => [200,200],
         'path' => 'uploads/'. date('Y/m/d'),

@@ -34,7 +34,7 @@ class UploadController extends \App\Http\Controllers\Controller
         if (! in_array('.'.$uploadFile->getClientOriginalExtension(), $config['ext'])){
             return $this->message(1, '不支持的上传类型'.$uploadFile->getClientOriginalExtension());
         }
-        if ($request->input('dzchunksize') > $config['size'] * 1048576){
+        if ($request->input('dztotalfilesize') > $config['size'] * 1048576){
             return $this->message(1, '文件大小超过上限：'. $config['size'].'MB');
         }
 

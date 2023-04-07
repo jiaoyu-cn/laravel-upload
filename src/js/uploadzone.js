@@ -50,7 +50,7 @@ uploadzone.prototype = {
         url:'',
         paramName: "file", // The name that will be used to transfer the file
         maxFiles: 1,
-        maxFilesize: 200, // MB
+        maxFilesize: 10, // MB
         forceChunking: true,
         chunking: true,
         chunkSize: 2 * 1024 * 1024,
@@ -60,7 +60,7 @@ uploadzone.prototype = {
         dictResponseError: "文件上传失败！",
         dictInvalidFileType: "文件类型支持",
         dictFallbackMessage: "浏览器不支持",
-        dictFileTooBig: "文件过大，上传的文件最大支持",
+        dictFileTooBig: "文件过大，最大支持",
         dictRemoveFile: "删除",
         dictCancelUpload: "取消",
     },
@@ -91,9 +91,12 @@ uploadzone.prototype = {
     init: function () {
 
         let config = this.config;
+        // 修改文件基值
+        config.filesizeBase = 1024;
+
         // 处理一些展示
         config.dictInvalidFileType += config.acceptedFiles;
-        config.dictFileTooBig += config.maxFilesize;
+        config.dictFileTooBig += config.maxFilesize+'MB';
         config.dictMaxFilesExceeded += config.maxFiles;
 
         // csrf处理
