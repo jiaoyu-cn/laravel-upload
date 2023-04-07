@@ -10,14 +10,17 @@ return [
      *       'ext' => ['png', 'jpg']  // 支持的文件类型，类型array
      * ]
      */
-    'dir' => [
+    'global' => [
         'tmp' => 'uploads/tmp', //
         'path' => 'uploads',
+        'name' => 'file',
+        'auth' => ['auth']
     ],
 
     'img' => [
         'size' => 3, // MB
-        'ext' => ['png', 'jpg', 'jpeg'],
+        'ext' => ['.png', '.jpg', '.jpeg', '.zip'],
+        'resize' => [200,200],
         'path' => 'uploads/'. date('Y/m/d'),
     ]
 ];

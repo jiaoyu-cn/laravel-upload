@@ -11,7 +11,7 @@ class UploadController extends \App\Http\Controllers\Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(config('upload.gloabal.auth'));
     }
 
     /**
@@ -31,7 +31,7 @@ class UploadController extends \App\Http\Controllers\Controller
             return $this->message(1, '上传失败');
         }
 
-        if (! in_array($uploadFile->getClientOriginalExtension(), $config['ext'])){
+        if (! in_array('.'.$uploadFile->getClientOriginalExtension(), $config['ext'])){
             return $this->message(1, '不支持的上传类型'.$uploadFile->getClientOriginalExtension());
         }
         if ($request->input('dzchunksize') > $config['size'] * 1048576){
