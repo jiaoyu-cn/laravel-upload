@@ -5,7 +5,7 @@ function uploadzone(setting) {
         return;
     }
 
-    // 元素名称
+    // 元素标识，dom,#id,.class
     this.dom = setting.dom;
 
     // csrf处理
@@ -29,8 +29,10 @@ function uploadzone(setting) {
         this.configInit[param] = setting[param];
     }
 
+    // 初始化
     this.init();
 
+    // 返回实例对象
     return this.dropzone;
 
 }

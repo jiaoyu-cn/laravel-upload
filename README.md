@@ -79,11 +79,34 @@ myDropzone = new uploadzone({
     dom: '#dpz-single-file',
     paramName: "{!! config('upload.global.name') !!}",
     acceptedFiles:"{!! implode(',', config('upload.img.ext')) !!}",
+    
     // param为上传关联配置的标识 ，必填 
     // is_tmp 决定使用哪个目录，false时，使用path配置目录，true时使用tmp目录
     url:"{!! route('jiaoyu.upload',['param' => 'img', 'is_tmp'=>true]) !!}",
     csrf:"{{ csrf_token() }}",
-    // chunkSize:50*1024
+    
+    // 成功回调，可通过此方法处理返回文件信息
+    success:function (file){
+        if (file.status === "success"){
+            var response = JSON.parse(file.xhr.response);
+        }
+    },
+    
+    // 失败回调,以下为默认方法，如不修改可省略
+    error:function (file, data){
+        if (file.previewElement){
+            let message = data;
+            if (typeof data.message !== "undefined") message = data.message
+            if (typeof message !== "string" && message.error) {
+                message = message.error;
+            }
+            for (let node of file.previewElement.querySelectorAll(
+                "[data-dz-errormessage]"
+            )) {
+                node.textContent = message;
+            }
+        }
+    }
 })
 ```
 
@@ -107,4 +130,5 @@ myDropzone = new uploadzone({
 |  dictFileTooBig  | 文件过大提示语   | 文件过大，最大支持 +  maxFilesize + MB |                                                                                    |
 |  dictRemoveFile  | 删除提示语     |         删除 |      |
 |  dictCancelUpload  | 取消提示语   |    取消     |    |
+
 
