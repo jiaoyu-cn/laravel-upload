@@ -65,7 +65,7 @@ class UploadController extends \App\Http\Controllers\Controller
             if(Validator::make(['file' => new File($uploadObject->path($path.'/'.$fileName))], ['file' => 'image'])->passes() &&
                 isset($config['resize']) && count($config['resize']) == 2
             ){
-                $fileNameThumb = md5($request->input('dzuuid')).config('upload.gloabal.thumb', 'thumb').'.'.$uploadFile->getClientOriginalExtension();
+                $fileNameThumb = md5($request->input('dzuuid')).'_'.config('upload.gloabal.thumb', 'thumb').'.'.$uploadFile->getClientOriginalExtension();
                 Image::make($uploadObject->path($path.'/'.$fileName))->resize($config['resize'][0], $config['resize'][1], function ($constraint){
                     $constraint->aspectRatio();   // 按比例调整图片大小
                     $constraint->upsize(); // 这里如果宽度不足 200 时，保持原来尺寸

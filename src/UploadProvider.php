@@ -43,7 +43,7 @@ class UploadProvider extends ServiceProvider
 
                 // 检测是否存在附件
                 $thumbPath = $fileInfo['dirname'] . '/';
-                $thumbFile = $fileInfo['filename'] .'_thumb.'.$fileInfo['extension'];
+                $thumbFile = $fileInfo['filename'] .'_'.config('upload.gloabal.thumb', 'thumb').'.'.$fileInfo['extension'];
                 if ($uploadObject->exists($thumbPath.$thumbFile)){
                     $uploadObject->move($thumbPath.$thumbFile, $to.'/'.$thumbFile);
                 }
