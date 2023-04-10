@@ -14,7 +14,10 @@ return [
         'tmp' => '/uploads/tmp', //
         'path' => '/uploads',
         'name' => 'file',
-        'auth' => ['auth']
+        'auth' => ['auth'],
+        'filesystem' => 'localFile',
+        'thumb' => 'thumb',
+
     ],
 
     'img' => [

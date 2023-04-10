@@ -29,8 +29,9 @@ class UploadProvider extends ServiceProvider
         // 文件移动
         $this->app->singleton('jiaoyu.move', function (){
             return function ($from, $to){
+                $uploadObject = Storage::disk(config('upload.global.filesystem', 'localFile'));
                 // 检测文件是否存在
-                if (!Storage::disk('localFile')->exists($from)){
+                if (!$uploadObject->exists($from)){
                     return ['code' => 1, 'message' => '上传文件不存在'];
                 }
 
@@ -38,13 +39,13 @@ class UploadProvider extends ServiceProvider
                 $fileInfo = pathinfo($from);
 
                 // 移动文件
-                Storage::disk('localFile')->move($from, $to.'/'.$fileInfo['basename']);
+                $uploadObject->move($from, $to.'/'.$fileInfo['basename']);
 
                 // 检测是否存在附件
                 $thumbPath = $fileInfo['dirname'] . '/';
                 $thumbFile = $fileInfo['filename'] .'_thumb.'.$fileInfo['extension'];
-                if (Storage::disk('localFile')->exists($thumbPath.$thumbFile)){
-                    Storage::disk('localFile')->move($thumbPath.$thumbFile, $to.'/'.$thumbFile);
+                if ($uploadObject->exists($thumbPath.$thumbFile)){
+                    $uploadObject->move($thumbPath.$thumbFile, $to.'/'.$thumbFile);
                 }
 
                 return ['code' => 0, 'message' => '移动成功', 'path' => $to.'/'.$fileInfo['basename']];

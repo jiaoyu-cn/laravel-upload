@@ -46,32 +46,33 @@ class UploadController extends \App\Http\Controllers\Controller
         $path = ($config[$pathType] ?? config('upload.global.'.$pathType));
 
         // 初始化
-        if (!Storage::disk('localFile')->exists($path)){
-            Storage::disk('localFile')->putFileAs($path, $request->file(config('upload.global.name')), $fileName, 'public');
+        $uploadObject = Storage::disk(config('upload.gloabal.filesystem','localFile'));
+        if (!$uploadObject->exists($path)){
+            $uploadObject->putFileAs($path, $request->file(config('upload.global.name')), $fileName, 'public');
         }else{
-            file_put_contents(app('path.public').DIRECTORY_SEPARATOR.ltrim($path.'/'.$fileName, DIRECTORY_SEPARATOR),
+            file_put_contents($uploadObject->path($path.'/'.$fileName),
                 $request->file('file')->get(), FILE_APPEND);
         }
 
         $data = [];
         if ($request->input('dzchunkindex') == $request->input('dztotalchunkcount') - 1) {
             $data = [
-                'path' => '/'.$path.'/'.$fileName,
-                'url' => app('url')->asset($path.'/'.$fileName),
+                'path' => '/'.trim($path.'/'.$fileName, DIRECTORY_SEPARATOR),
+                'url' =>$uploadObject->url($path.'/'.$fileName),
                 'filename' => $uploadFile->getClientOriginalName()
             ];
             // 图片类型生成缩略图
-            if(Validator::make(['file' => new File(public_path($path.'/'.$fileName))], ['file' => 'image'])->passes() &&
+            if(Validator::make(['file' => new File($uploadObject->path($path.'/'.$fileName))], ['file' => 'image'])->passes() &&
                 isset($config['resize']) && count($config['resize']) == 2
             ){
-                $fileNameThumb = md5($request->input('dzuuid')).'_thumb.'.$uploadFile->getClientOriginalExtension();
-                Image::make(public_path($path.'/'.$fileName))->resize($config['resize'][0], $config['resize'][1], function ($constraint){
+                $fileNameThumb = md5($request->input('dzuuid')).config('upload.gloabal.thumb', 'thumb').'.'.$uploadFile->getClientOriginalExtension();
+                Image::make($uploadObject->path($path.'/'.$fileName))->resize($config['resize'][0], $config['resize'][1], function ($constraint){
                     $constraint->aspectRatio();   // 按比例调整图片大小
                     $constraint->upsize(); // 这里如果宽度不足 200 时，保持原来尺寸
-                })->save(public_path($path.'/'.$fileNameThumb));
+                })->save($uploadObject->path($path.'/'.$fileNameThumb));
 
-                $data['path_thumb'] = '/'.$path.'/'.$fileNameThumb;
-                $data['url_thumb'] = app('url')->asset($path.'/'.$fileNameThumb);
+                $data['path_'.config('upload.gloabal.thumb', 'thumb')] = '/'.trim($path.'/'.$fileNameThumb, DIRECTORY_SEPARATOR);
+                $data['url_'.config('upload.gloabal.thumb', 'thumb')] = $uploadObject->url($path.'/'.$fileNameThumb);
             }
         }
 

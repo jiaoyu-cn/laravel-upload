@@ -20,6 +20,7 @@ php artisan vendor:publish --provider="Githen\LaravelUpload\UploadProvider"
 'localFile' => [
         'driver' => 'local',
         'root' => public_path(),
+        'url' => config('app.url'), // 生成url前缀
         'permissions' => [
             'file' => [
                 'public' => 0770,
@@ -41,14 +42,18 @@ return [
     |--------------------------------------------------------------------------
     |  '标识' => [
      *      'size' => 3, //文件大小上限  类型int 单位MB
-     *       'ext' => ['png', 'jpg']  // 支持的文件类型，类型array
+     *      'ext' => ['png', 'jpg']  // 支持的文件类型，类型array
+     *      'resize' => [200, 200]  // 若为图片类型，自动处理图片为200X200
+     *      'path' => 'uploads/'. date('Y/m/d'),  // 文件实际存储目录
      * ]
      */
     'global' => [
-        'tmp' => 'uploads/tmp', //
-        'path' => 'uploads',
-        'name' => 'file',
-        'auth' => ['auth']
+        'tmp' => 'uploads/tmp', // 临时目录，在表单提交时再将文件移动到path目录
+        'path' => 'uploads', // 实际存储目录
+        'name' => 'file',  // 文件上传时文件对应的key
+        'auth' => ['auth'],  // 上传controller加载的中间件
+        'filesystem' => 'localFile', // 使用的文件系统
+        'thumb' => 'thumb', // 图片类型缩略图名称，a.png => a_thumb.png
     ],
 
     'img' => [
@@ -63,7 +68,7 @@ return [
 
 ## 初始化上传实例
 
-自动发现功能将在6.0.0中删除，如果依赖此功能，需要手动关闭。
+自动发现功能将在6.0.0中删除，如果依赖此功能，需要手动关闭。默认生成的JS已处理，可忽略。
 ```javascript
 Dropzone.autoDiscover = false; 
 ```
@@ -83,7 +88,7 @@ myDropzone = new uploadzone({
     // param为上传关联配置的标识 ，必填 
     // is_tmp 决定使用哪个目录，false时，使用path配置目录，true时使用tmp目录
     url:"{!! route('jiaoyu.upload',['param' => 'img', 'is_tmp'=>true]) !!}",
-    csrf:"{{ csrf_token() }}",
+    csrf:true,
     
     // 成功回调，可通过此方法处理返回文件信息
     success:function (file){
@@ -110,26 +115,26 @@ myDropzone = new uploadzone({
 })
 ```
 
-| 参数 | 名称                 | 说明                                                | 备注                                                                                 |
-|----|--------------------|---------------------------------------------------|------------------------------------------------------------------------------------|
-|  dom  | 实例化的DOM标识          | 必填     |     |
-|  csrf  | POST提交时的csrf验证     | 非必填<br>(`/jiaoyu/upload/*`CSRF排除） |    |
-|  acceptedFiles  | 允许上传文件后缀(.jpg,.png) | 默认为.zip |       |
+| 参数 | 名称                 | 说明                                                                | 备注                                                                                 |
+|----|--------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------|
+|  dom  | 实例化的DOM标识          | 必填                                                                |                                                                                    |
+|  csrf  | POST提交时的csrf验证     | 非必填<br>true| false                                                                              |    |
+|  acceptedFiles  | 允许上传文件后缀(.jpg,.png) | 默认为.zip                                                           |                                                                                    |
 |  url  | 上传地址 | {!! route('jiaoyu.upload',['param' => 'img', 'is_tmp'=>true]) !!} | `param`:标识（以此标识从`upload.php`中获取配置信息）<br/>`is_tmp`:是否使用临时目录(`tmp`)，为false使用`path`目录 |
-|  paramName  | 上传的属性名称  | 非必填，默认:`file` |         |
-|  chunkSize  | 分片大小  | 单位：MB,默认2MB |        |
-|  maxFiles  | 最多上传文件数  | 非必填，默认：1 |        |
-|  maxFilesize  | 文件最大限制   | 非必填，单位：MB,默认10MB, |     |
-|  chunking  | 是否分片   |     |      |
-|  forceChunking  | 上传时显示文件详情，不可修改   |        |     |
-|  dictDefaultMessage  | 默认提示语   | 拖动文件至此处或点击上传  |      |
-|  dictMaxFilesExceeded  | 超过限制上传数量提示语    | 您最多上传的文件数为 +   maxFiles | |
-|  dictResponseError  | 上传失败提示语  | 文件上传失败！ |       |
-|  dictInvalidFileType  | 文件类型提示语   | 文件类型支持 |     |
-|  dictFallbackMessage  | 兼容性提示语   | 浏览器不支持  |     |
-|  dictFileTooBig  | 文件过大提示语   | 文件过大，最大支持 +  maxFilesize + MB |                                                                                    |
-|  dictRemoveFile  | 删除提示语     |         删除 |      |
-|  dictCancelUpload  | 取消提示语   |    取消     |    |
+|  paramName  | 上传的属性名称  | 非必填，默认:`file`                                                     |                                                                                    |
+|  chunkSize  | 分片大小  | 单位：MB,默认2MB                                                       |                                                                                    |
+|  maxFiles  | 最多上传文件数  | 非必填，默认：1                                                          |                                                                                    |
+|  maxFilesize  | 文件最大限制   | 非必填，单位：MB,默认10MB,                                                 |                                                                                    |
+|  chunking  | 是否分片   |                                                                   |                                                                                    |
+|  forceChunking  | 上传时显示文件详情，不可修改   |                                                                   |                                                                                    |
+|  dictDefaultMessage  | 默认提示语   | 拖动文件至此处或点击上传                                                      |                                                                                    |
+|  dictMaxFilesExceeded  | 超过限制上传数量提示语    | 您最多上传的文件数为 +   maxFiles                                           |                                                                                    |
+|  dictResponseError  | 上传失败提示语  | 文件上传失败！                                                           |                                                                                    |
+|  dictInvalidFileType  | 文件类型提示语   | 文件类型支持                                                            |                                                                                    |
+|  dictFallbackMessage  | 兼容性提示语   | 浏览器不支持                                                            |                                                                                    |
+|  dictFileTooBig  | 文件过大提示语   | 文件过大，最大支持 +  maxFilesize + MB                                     |                                                                                    |
+|  dictRemoveFile  | 删除提示语     | 删除                                                                |                                                                                    |
+|  dictCancelUpload  | 取消提示语   | 取消                                                                |                                                                                    |
 
 ## 临时目录迁移到正式目录
 如果上传的文件是放在临时目录`tmp`下，则在实际业务中，需要进行迁移文件到正式目录。可执行以下操作完成迁移操作。

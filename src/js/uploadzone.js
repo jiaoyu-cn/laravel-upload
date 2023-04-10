@@ -5,13 +5,9 @@ function uploadzone(setting) {
         return;
     }
 
-    // 元素标识，dom,#id,.class
+    // 元素名称
     this.dom = setting.dom;
-
-    // csrf处理
-    if (typeof setting['csrf'] != 'undefined'){
-        this.csrf = setting['csrf'];
-    }
+    this.csrf = setting.csrf == undefined ? true : setting.csrf;
 
     // 设置配置信息
     for (let param of Object.keys(this.config)) {
@@ -29,10 +25,8 @@ function uploadzone(setting) {
         this.configInit[param] = setting[param];
     }
 
-    // 初始化
     this.init();
 
-    // 返回实例对象
     return this.dropzone;
 
 }
@@ -42,7 +36,7 @@ uploadzone.prototype = {
     dropzone:undefined,
 
     // csrf处理
-    csrf:'',
+    csrf:true,
 
     // 事件列表
     event:['error', 'success'],
@@ -53,7 +47,6 @@ uploadzone.prototype = {
         paramName: "file", // The name that will be used to transfer the file
         maxFiles: 1,
         maxFilesize: 10, // MB
-        forceChunking: true,
         chunking: true,
         chunkSize: 2 * 1024 * 1024,
         acceptedFiles:'',
@@ -95,6 +88,7 @@ uploadzone.prototype = {
         let config = this.config;
         // 修改文件基值
         config.filesizeBase = 1024;
+        config.forceChunking = true;
 
         // 处理一些展示
         config.dictInvalidFileType += config.acceptedFiles;
@@ -102,9 +96,9 @@ uploadzone.prototype = {
         config.dictMaxFilesExceeded += config.maxFiles;
 
         // csrf处理
-        if (this.csrf.length > 0){
+        if (this.csrf){
             config.headers = {
-                'X-CSRF-TOKEN':this.csrf
+                'X-XSRF-TOKEN': $.cookie('XSRF-TOKEN')
             };
         }
 
@@ -114,7 +108,7 @@ uploadzone.prototype = {
                 this.on(event, that.configInit[event]);
             }
         };
-
+        Dropzone.autoDiscover = false;
         this.dropzone = new Dropzone(this.dom, config);
     },
     getConfig:function (){
