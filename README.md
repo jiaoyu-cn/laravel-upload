@@ -1,10 +1,9 @@
 # laravel-upload
 基于Dropzone为laravel提供上传支持
 
-
 [![image](https://img.shields.io/github/stars/jiaoyu-cn/laravel-upload)](https://github.com/jiaoyu-cn/laravel-upload/stargazers)
 [![image](https://img.shields.io/github/forks/jiaoyu-cn/laravel-upload)](https://github.com/jiaoyu-cn/laravel-upload/network/members)
-[![image](https://img.shields.io/github/issues/githen-cn/laravel-upload)](https://github.com/githen-cn/laravel-upload/issues)
+[![image](https://img.shields.io/github/issues/jiaoyu-cn/laravel-upload)](https://github.com/jiaoyu-cn/laravel-upload/issues)
 
 ## 安装
 
@@ -149,6 +148,6 @@ $result = call_user_func(app('jiaoyu.move'), $from, $to);
 [
     "code" => 0, // 0 成功 1失败
     "message" => "成功", // 执行说明
-    "path" => '', // 新文件的目录，缩略图默认在文件名后加标识 _thumb
+    "path" => '', // 新文件的目录，缩略图默认在文件名后加入缩略图标识，`upload.global.thumb`
 ]
 ```
