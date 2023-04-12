@@ -59,7 +59,8 @@ class UploadController extends \App\Http\Controllers\Controller
             $data = [
                 'path' => '/'.trim($path.'/'.$fileName, DIRECTORY_SEPARATOR),
                 'url' =>$uploadObject->url($path.'/'.$fileName),
-                'filename' => $uploadFile->getClientOriginalName()
+                'filename' => $uploadFile->getClientOriginalName(),
+                'uid' => $request->input('dzuuid'),
             ];
             // 图片类型生成缩略图
             if(Validator::make(['file' => new File($uploadObject->path($path.'/'.$fileName))], ['file' => 'image'])->passes() &&
