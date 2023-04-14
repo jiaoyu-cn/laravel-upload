@@ -39,7 +39,7 @@ uploadzone.prototype = {
     csrf:true,
 
     // 事件列表
-    event:['error', 'success'],
+    event:['error', 'success', 'removedfile','maxfilesexceeded'],
 
     // 配置信息
     config:{
@@ -47,6 +47,7 @@ uploadzone.prototype = {
         paramName: "file", // The name that will be used to transfer the file
         maxFiles: 1,
         maxFilesize: 10, // MB
+        disablePreviews:false,
         chunking: true,
         chunkSize: 2 * 1024 * 1024,
         acceptedFiles:'',
@@ -58,6 +59,8 @@ uploadzone.prototype = {
         dictFileTooBig: "文件过大，最大支持",
         dictRemoveFile: "删除",
         dictCancelUpload: "取消",
+        previewsContainer:null,
+        previewTemplate:null,
     },
 
     // 事件绑定

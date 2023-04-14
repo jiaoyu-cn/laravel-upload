@@ -110,6 +110,15 @@ myDropzone = new uploadzone({
                 node.textContent = message;
             }
         }
+    },
+    // 删除文件
+    removedfile:function(file){
+
+
+    },
+    // 超过maxFiles限制回调处理
+    maxfilesexceeded:function(file){
+
     }
 })
 ```
@@ -127,13 +136,15 @@ myDropzone = new uploadzone({
 |  chunking  | 是否分片   |                                                                   |                                                                                    |
 |  forceChunking  | 上传时显示文件详情，不可修改   |                                                                   |                                                                                    |
 |  dictDefaultMessage  | 默认提示语   | 拖动文件至此处或点击上传                                                      |                                                                                    |
-|  dictMaxFilesExceeded  | 超过限制上传数量提示语    | 您最多上传的文件数为 +   maxFiles                                           |                                                                                    |
+|  dictMaxFilesExceeded  | 超过限制上传数量提示语    | 您最多上传的文件数为 +   maxFiles      |                                                                                    |
 |  dictResponseError  | 上传失败提示语  | 文件上传失败！                                                           |                                                                                    |
 |  dictInvalidFileType  | 文件类型提示语   | 文件类型支持                                                            |                                                                                    |
 |  dictFallbackMessage  | 兼容性提示语   | 浏览器不支持                                                            |                                                                                    |
 |  dictFileTooBig  | 文件过大提示语   | 文件过大，最大支持 +  maxFilesize + MB                                     |                                                                                    |
-|  dictRemoveFile  | 删除提示语     | 删除                                                                |                                                                                    |
-|  dictCancelUpload  | 取消提示语   | 取消                                                                |                                                                                    |
+|  dictRemoveFile  | 删除提示语     | 删除        |                   |
+|  addRemoveLinks  | 添加删除连接  |           |                                                                                    |
+|  previewsContainer  | 预览容器   |                                                                 |                                                                                    |
+|  previewTemplate  | 预览生成模板   |                                                                 |                                                                                    |
 
 ## 临时目录迁移到正式目录
 如果上传的文件是放在临时目录`tmp`下，则在实际业务中，需要进行迁移文件到正式目录。可执行以下操作完成迁移操作。
