@@ -96,7 +96,7 @@ uploadzone.prototype = {
         // 处理一些展示
         config.dictInvalidFileType += config.acceptedFiles;
         config.dictFileTooBig += config.maxFilesize+'MB';
-        config.dictMaxFilesExceeded += config.maxFiles;
+        config.dictMaxFilesExceeded += config.maxFiles+'个';
 
         // csrf处理
         if (this.csrf){
