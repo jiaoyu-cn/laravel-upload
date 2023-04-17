@@ -51,6 +51,7 @@ uploadzone.prototype = {
         chunking: true,
         chunkSize: 2 * 1024 * 1024,
         acceptedFiles:'',
+        addRemoveLinks:true,
         dictDefaultMessage: "拖动文件至此处或点击上传",
         dictMaxFilesExceeded: "您最多上传的文件数为",
         dictResponseError: "文件上传失败！",
