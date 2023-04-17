@@ -98,6 +98,15 @@ uploadzone.prototype = {
         config.dictFileTooBig += config.maxFilesize+'MB';
         config.dictMaxFilesExceeded += config.maxFiles+'个';
 
+        //
+        if (typeof config.previewsContainer == "undefined"){
+            delete config.previewsContainer;
+        }
+
+        if (typeof config.previewTemplate == "undefined"){
+            delete config.previewTemplate;
+        }
+
         // csrf处理
         if (this.csrf){
             config.headers = {
