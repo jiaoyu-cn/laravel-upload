@@ -60,8 +60,8 @@ uploadzone.prototype = {
         dictFileTooBig: "文件过大，最大支持",
         dictRemoveFile: "删除",
         dictCancelUpload: "取消",
-        previewsContainer:null,
-        previewTemplate:null,
+        previewsContainer:undefined,
+        previewTemplate:undefined,
     },
 
     // 事件绑定
