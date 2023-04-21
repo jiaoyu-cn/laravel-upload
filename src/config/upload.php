@@ -23,7 +23,8 @@ return [
     'img' => [
         'size' => 10, // MB
         'ext' => ['.png', '.jpg', '.jpeg'],
-        'resize' => [200,200],
+        'resize' => [400,500],
+        'thumb_resize' => [200,200],
         'path' => '/uploads/'. date('Y/m/d'),
     ]
 ];
