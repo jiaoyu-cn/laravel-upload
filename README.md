@@ -58,7 +58,8 @@ return [
     'img' => [
         'size' => 3, // MB
         'ext' => ['.png', '.jpg', '.jpeg', '.zip'],
-        'resize' => [200,200], // 生成缩略图，只有图片格式有效，不配置则不生成
+        'resize' => [200,200], // 原图等比压缩，只有图片格式有效，不配置使用原图
+        'thumb_resize' => [200,200], // 生成缩略图，只有图片格式有效，不配置则不生成
         'path' => 'uploads/'. date('Y/m/d'),
     ]
 ];
@@ -123,28 +124,30 @@ myDropzone = new uploadzone({
 })
 ```
 
-| 参数 | 名称                 | 说明                                                                | 备注                                                                                 |
-|----|--------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------|
-|  dom  | 实例化的DOM标识          | 必填                                                                |                                                                                    |
-|  csrf  | POST提交时的csrf验证     | 非必填<br>true| false                                                                              |    |
+| 参数 | 名称                  | 说明                                                                | 备注                                                                                 |
+|----|---------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------|
+|  dom  | 实例化的DOM标识           | 必填                                                                |                                                                                    |
+|  csrf  | POST提交时的csrf验证      | 非必填<br>true                                                       | false                                                                              |    |
 |  acceptedFiles  | 允许上传文件后缀(.jpg,.png) | 默认为.zip                                                           |                                                                                    |
-|  url  | 上传地址 | {!! route('jiaoyu.upload',['param' => 'img', 'is_tmp'=>true]) !!} | `param`:标识（以此标识从`upload.php`中获取配置信息）<br/>`is_tmp`:是否使用临时目录(`tmp`)，为false使用`path`目录 |
-|  paramName  | 上传的属性名称  | 非必填，默认:`file`                                                     |                                                                                    |
-|  chunkSize  | 分片大小  | 单位：MB,默认2MB                                                       |                                                                                    |
-|  maxFiles  | 最多上传文件数  | 非必填，默认：1                                                          |                                                                                    |
-|  maxFilesize  | 文件最大限制   | 非必填，单位：MB,默认10MB,                                                 |                                                                                    |
-|  chunking  | 是否分片   |                                                                   |                                                                                    |
-|  forceChunking  | 上传时显示文件详情，不可修改   |                                                                   |                                                                                    |
-|  dictDefaultMessage  | 默认提示语   | 拖动文件至此处或点击上传                                                      |                                                                                    |
-|  dictMaxFilesExceeded  | 超过限制上传数量提示语    | 您最多上传的文件数为 +   maxFiles      |                                                                                    |
-|  dictResponseError  | 上传失败提示语  | 文件上传失败！                                                           |                                                                                    |
-|  dictInvalidFileType  | 文件类型提示语   | 文件类型支持                                                            |                                                                                    |
-|  dictFallbackMessage  | 兼容性提示语   | 浏览器不支持                                                            |                                                                                    |
-|  dictFileTooBig  | 文件过大提示语   | 文件过大，最大支持 +  maxFilesize + MB                                     |                                                                                    |
-|  dictRemoveFile  | 删除提示语     | 删除        |                   |
-|  addRemoveLinks  | 添加删除连接  |           |                                                                                    |
-|  previewsContainer  | 预览容器   |                                                                 |                                                                                    |
-|  previewTemplate  | 预览生成模板   |                                                                 |                                                                                    |
+|  url  | 上传地址                | {!! route('jiaoyu.upload',['param' => 'img', 'is_tmp'=>true]) !!} | `param`:标识（以此标识从`upload.php`中获取配置信息）<br/>`is_tmp`:是否使用临时目录(`tmp`)，为false使用`path`目录 |
+|  paramName  | 上传的属性名称             | 非必填，默认:`file`   |                        |
+|  chunkSize  | 分片大小                | 单位：MB,默认2MB   |          |
+|  maxFiles  | 最多上传文件数             | 非必填，默认：1       |          |
+|  maxFilesize  | 文件最大限制              | 非必填，单位：MB,默认10MB,      |               |
+|  chunking  | 是否分片                |              |            |
+|  forceChunking  | 上传时显示文件详情，不可修改      |         |       |
+|  dictDefaultMessage  | 默认提示语               | 拖动文件至此处或点击上传        |         |
+|  dictMaxFilesExceeded  | 超过限制上传数量提示语         | 您最多上传的文件数为 +   maxFiles   |                                                                                    |
+|  dictResponseError  | 上传失败提示语             | 文件上传失败！      |                                                                                    |
+|  dictInvalidFileType  | 文件类型提示语             | 文件类型支持    |                                                                                    |
+|  dictFallbackMessage  | 兼容性提示语              | 浏览器不支持     |                                                                                    |
+|  dictFileTooBig  | 文件过大提示语             | 文件过大，最大支持 +  maxFilesize + MB    |                                                                                    |
+|  dictRemoveFile  | 删除提示语               | 删除      |  |
+|  addRemoveLinks  | 添加删除连接              |        |                                                                                    |
+|  previewsContainer  | 预览容器                |        |                                                                                    |
+|  previewTemplate  | 预览生成模板              |              |                   |
+|  thumbnailWidth  | 插件中，展示图宽度           | 默认：120                                                  |                                                                                    |
+|  thumbnailHeight  | 插件中，展示图高度           | 默认：120                                                            |                                                                                    |
 
 ## 临时目录迁移到正式目录
 如果上传的文件是放在临时目录`tmp`下，则在实际业务中，需要进行迁移文件到正式目录。可执行以下操作完成迁移操作。
