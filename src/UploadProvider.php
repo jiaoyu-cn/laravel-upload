@@ -27,7 +27,7 @@ class UploadProvider extends ServiceProvider
     public function boot()
     {
         // 文件移动
-        $this->app->singleton('jiaoyu.move', function (){
+        $this->app->singleton('jiaoyu.upload.move', function (){
             return function ($from, $to){
                 $uploadObject = Storage::disk(config('upload.global.filesystem', 'localFile'));
                 // 检测文件是否存在
@@ -51,6 +51,27 @@ class UploadProvider extends ServiceProvider
                 return ['code' => 0, 'message' => '移动成功', 'path' => $to.'/'.$fileInfo['basename']];
             };
 
+        });
+        $this->app->singleton('jiaoyu.upload.delete', function (){
+            return function ($file){
+                $uploadObject = Storage::disk(config('upload.global.filesystem', 'localFile'));
+                // 检测文件是否存在
+                if ($uploadObject->exists($file)){
+                    $uploadObject->delete($file);
+                }
+
+                // 获取文件名称
+                $fileInfo = pathinfo($file);
+
+                // 检测是否存在附件
+                $thumbPath = $fileInfo['dirname'] . '/';
+                $thumbFile = $fileInfo['filename'] .'_'.config('upload.gloabal.thumb', 'thumb').'.'.$fileInfo['extension'];
+                if ($uploadObject->exists($thumbPath.$thumbFile)){
+                    $uploadObject->delete($thumbPath.$thumbFile);
+                }
+
+                return ['code' => 0, 'message' => '删除成功'];
+            };
         });
 
         // 请求路由
