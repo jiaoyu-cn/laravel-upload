@@ -31,15 +31,16 @@ class UploadController extends \App\Http\Controllers\Controller
             return $this->message(1, '上传失败');
         }
 
-        if (! in_array('.'.$uploadFile->getClientOriginalExtension(), $config['ext'])){
-            return $this->message(1, '不支持的上传类型'.$uploadFile->getClientOriginalExtension());
+        $extendsion = strtolower($uploadFile->getClientOriginalExtension());
+        if (! in_array('.'.$extendsion, $config['ext'])){
+            return $this->message(1, '不支持的上传类型'.$extendsion);
         }
         if ($request->input('dztotalfilesize') > $config['size'] * 1048576){
             return $this->message(1, '文件大小超过上限：'. $config['size'].'MB');
         }
 
         // 分片上传中
-        $fileName = md5($request->input('dzuuid')).'.'.$uploadFile->getClientOriginalExtension();
+        $fileName = md5($request->input('dzuuid')).'.'.$extendsion;
 
         // 检测存放目录
         $pathType = $request->input('is_tmp', false) ? 'tmp' : 'path';
@@ -74,7 +75,7 @@ class UploadController extends \App\Http\Controllers\Controller
 
                 // 生成缩略图
                 if (isset($config['thumb_resize']) && count($config['thumb_resize']) == 2){
-                    $fileNameThumb = md5($request->input('dzuuid')).'_'.config('upload.gloabal.thumb', 'thumb').'.'.$uploadFile->getClientOriginalExtension();
+                    $fileNameThumb = md5($request->input('dzuuid')).'_'.config('upload.gloabal.thumb', 'thumb').'.'.$extendsion;
                     Image::make($uploadObject->path($path.'/'.$fileName))->resize($config['thumb_resize'][0], $config['thumb_resize'][1], function ($constraint){
                         $constraint->aspectRatio();   // 按比例调整图片大小
                         $constraint->upsize(); // 这里如果宽度不足 200 时，保持原来尺寸
