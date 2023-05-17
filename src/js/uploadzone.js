@@ -9,7 +9,7 @@ class uploadzone {
     dropzone = {};
 
     // 监听事件
-    #event = ['error', 'success', 'removedfile','maxfilesexceeded'];
+    #event = ['error', 'success', 'addedfile', 'removedfile', 'maxfilesexceeded', 'uploadprogress','queuecomplete'];
 
     // 默认事件
     #configEvent = {
@@ -149,6 +149,7 @@ class uploadzone {
             dictFileTooBig: "文件过大，最大支持",
             dictRemoveFile: "删除",
             dictCancelUpload: "取消",
+            dictCancelUploadConfirmation: "确定要取消上传吗?",
             previewsContainer:undefined,
             previewTemplate:undefined,
         };
