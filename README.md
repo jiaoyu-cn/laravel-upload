@@ -156,7 +156,7 @@ myDropzone = new uploadzone({
 // $from 文件地址
 // $to    需要迁移到的目录
 // 如果存在缩略图，一并迁移 
-$result = call_user_func(app('jiaoyu.upload.move'), $from, $to);
+$result = app('jiaoyu.upload')->move($from, $to);
 
 // 返回数据结构
 [
@@ -169,8 +169,7 @@ $result = call_user_func(app('jiaoyu.upload.move'), $from, $to);
 ## 删除文件
 ```php
 // $file 要删除的文件
-
-$result = call_user_func(app('jiaoyu.upload.remove'), $file);
+$result = app('jiaoyu.upload')->remove($file);
 
 // 返回数据结构
 [
