@@ -1,4 +1,4 @@
-class uploadzone {
+var uploadzone = class {
     // 容器标识
     #dom;
 
