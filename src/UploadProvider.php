@@ -72,7 +72,7 @@ class UploadProvider extends ServiceProvider
 
         // 检测是否存在附件
         $thumbPath = $fileInfo['dirname'] . '/';
-        $thumbFile = $fileInfo['filename'] .'_'.config('upload.gloabal.thumb', 'thumb').'.'.$fileInfo['extension'];
+        $thumbFile = $fileInfo['filename'] .'_'.config('upload.global.thumb', 'thumb').'.'.$fileInfo['extension'];
         if ($uploadObject->exists($thumbPath.$thumbFile)){
             $uploadObject->move($thumbPath.$thumbFile, $to.'/'.$thumbFile);
         }
@@ -98,7 +98,7 @@ class UploadProvider extends ServiceProvider
 
         // 检测是否存在附件
         $thumbPath = $fileInfo['dirname'] . '/';
-        $thumbFile = $fileInfo['filename'] .'_'.config('upload.gloabal.thumb', 'thumb').'.'.$fileInfo['extension'];
+        $thumbFile = $fileInfo['filename'] .'_'.config('upload.global.thumb', 'thumb').'.'.$fileInfo['extension'];
         if ($uploadObject->exists($thumbPath.$thumbFile)){
             $uploadObject->delete($thumbPath.$thumbFile);
         }
@@ -144,7 +144,7 @@ class UploadProvider extends ServiceProvider
         $path = ($config[$pathType] ?? config('upload.global.'.$pathType));
 
         // 初始化
-        $uploadObject = Storage::disk(config('upload.gloabal.filesystem','localFile'));
+        $uploadObject = Storage::disk(config('upload.global.filesystem','localFile'));
         if (!$uploadObject->exists($path)){
             $uploadObject->putFileAs($path, $request->file(config('upload.global.name')), $fileName, 'public');
         }else{
@@ -174,13 +174,13 @@ class UploadProvider extends ServiceProvider
 
                 // 生成缩略图
                 if (isset($config['thumb_resize']) && count($config['thumb_resize']) == 2){
-                    $fileNameThumb = md5($request->input('dzuuid')).'_'.config('upload.gloabal.thumb', 'thumb').'.'.$extendsion;
+                    $fileNameThumb = md5($request->input('dzuuid')).'_'.config('upload.global.thumb', 'thumb').'.'.$extendsion;
                     Image::make($uploadObject->path($path.'/'.$fileName))->resize($config['thumb_resize'][0], $config['thumb_resize'][1], function ($constraint){
                         $constraint->aspectRatio();   // 按比例调整图片大小
                         $constraint->upsize(); // 这里如果宽度不足 200 时，保持原来尺寸
                     })->save($uploadObject->path($path.'/'.$fileNameThumb));
-                    $data['path_'.config('upload.gloabal.thumb', 'thumb')] = '/'.trim($path.'/'.$fileNameThumb, DIRECTORY_SEPARATOR);
-                    $data['url_'.config('upload.gloabal.thumb', 'thumb')] = $uploadObject->url($path.'/'.$fileNameThumb);
+                    $data['path_'.config('upload.global.thumb', 'thumb')] = '/'.trim($path.'/'.$fileNameThumb, DIRECTORY_SEPARATOR);
+                    $data['url_'.config('upload.global.thumb', 'thumb')] = $uploadObject->url($path.'/'.$fileNameThumb);
                 }
             }
         }
