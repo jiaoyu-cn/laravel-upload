@@ -16,7 +16,7 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "illuminate/support": "^6.20",
+        "illuminate/support": "^6.20|^8.0",
         "intervention/image": "^2.6"
     },
     "extra": {
