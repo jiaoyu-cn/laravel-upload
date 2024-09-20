@@ -127,7 +127,7 @@ class UploadProvider extends ServiceProvider
         }
 
         $extendsion = strtolower($uploadFile->getClientOriginalExtension());
-        if (! in_array('.'.$extendsion, $config['ext'])){
+        if (!empty($config['ext']) && !in_array('.'.$extendsion, $config['ext'])){
             return $this->message(1, '不支持的上传类型'.$extendsion);
         }
         $tmpSize = $request->input('dztotalfilesize', $request->input('size'));
@@ -136,8 +136,8 @@ class UploadProvider extends ServiceProvider
         }
 
         // 分片上传中
-        $tmpFileName = $request->input('dzuuid', microtime(true).rand(0, 1000));
-        $fileName = md5($tmpFileName).'.'.$extendsion;
+        $tmpUid = $request->input('dzuuid', $request->input('uuid', microtime(true).rand(0, 1000)));
+        $fileName = md5($tmpUid).'.'.$extendsion;
 
         // 检测存放目录
         $pathType = $request->input('is_tmp', false) ? 'tmp' : 'path';
@@ -160,7 +160,7 @@ class UploadProvider extends ServiceProvider
                 'path' => '/'.trim($path.'/'.$fileName, DIRECTORY_SEPARATOR),
                 'url' =>$uploadObject->url($path.'/'.$fileName),
                 'filename' => $uploadFile->getClientOriginalName(),
-                'uid' => $request->input('dzuuid', ''),
+                'uid' => $tmpUid,
             ];
             // 图片类型生成缩略图
             if(Validator::make(['file' => new File($uploadObject->path($path.'/'.$fileName))], ['file' => 'image'])->passes()){
