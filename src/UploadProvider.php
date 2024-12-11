@@ -164,6 +164,10 @@ class UploadProvider extends ServiceProvider
             ];
             // 图片类型生成缩略图
             if(Validator::make(['file' => new File($uploadObject->path($path.'/'.$fileName))], ['file' => 'image'])->passes()){
+                $memoryLimit = config('upload.global.memory_limit');
+                if (!empty($memoryLimit)){
+                    ini_set('memory_limit', $memoryLimit);
+                }
                 // 原图压缩
                 if (isset($config['resize']) && count($config['resize']) == 2){
                     Image::make($uploadObject->path($path.'/'.$fileName))->resize($config['resize'][0], $config['resize'][1], function ($constraint){
