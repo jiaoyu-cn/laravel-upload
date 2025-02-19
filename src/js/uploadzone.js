@@ -152,6 +152,7 @@ var uploadzone = class {
             dictCancelUploadConfirmation: "确定要取消上传吗?",
             previewsContainer:undefined,
             previewTemplate:undefined,
+            parallelUploads:2,
         };
     }
 
