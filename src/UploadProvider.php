@@ -172,7 +172,7 @@ class UploadProvider extends ServiceProvider
             // 图片类型生成缩略图
             if (Validator::make(['file' => new File($uploadObject->path($path . '/' . $fileName))], ['file' => 'image'])->passes()) {
                 if (isset($config['is_raw']) && $config['is_raw']) {
-                    $fileNameRaw = md5($request->input('dzuuid')) . '_raw.' . $extendsion;
+                    $fileNameRaw = md5($tmpUid) . '_raw.' . $extendsion;
                     $uploadObject->copy($path . '/' . $fileName, $path . '/' . $fileNameRaw);
                 }
                 $memoryLimit = config('upload.global.memory_limit');
@@ -189,7 +189,7 @@ class UploadProvider extends ServiceProvider
 
                 // 生成缩略图
                 if (isset($config['thumb_resize']) && count($config['thumb_resize']) == 2) {
-                    $fileNameThumb = md5($request->input('dzuuid')) . '_' . config('upload.global.thumb', 'thumb') . '.' . $extendsion;
+                    $fileNameThumb = md5($tmpUid) . '_' . config('upload.global.thumb', 'thumb') . '.' . $extendsion;
                     Image::make($uploadObject->path($path . '/' . $fileName))->resize($config['thumb_resize'][0], $config['thumb_resize'][1], function ($constraint) {
                         $constraint->aspectRatio();   // 按比例调整图片大小
                         $constraint->upsize(); // 这里如果宽度不足 200 时，保持原来尺寸
