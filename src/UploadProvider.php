@@ -183,6 +183,8 @@ class UploadProvider extends ServiceProvider
                 if ($extendsion == 'bmp') {
                     $gdInfo = gd_info();
                     $isResize = !empty($gdInfo['WebP Support']) && $gdInfo['WebP Support'] === true;
+                }else if($extendsion == 'gif'){
+                    $isResize = false;
                 }
                 // 原图压缩
                 if (isset($config['resize']) && count($config['resize']) == 2) {
