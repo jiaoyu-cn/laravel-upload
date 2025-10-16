@@ -68,6 +68,10 @@ class UploadProvider extends ServiceProvider
         // 获取文件名称
         $fileInfo = pathinfo($from);
 
+        $d = explode('-', date("Y-y-m-d-H-i-s"));
+        $d[] = time();
+        $to = str_replace(["{yyyy}", "{yy}", "{mm}", "{dd}", "{hh}", "{ii}", "{ss}", "{time}"], $d, $to);
+
         // 移动文件
         $uploadObject->move($from, $to . '/' . $fileInfo['basename']);
 
@@ -155,8 +159,11 @@ class UploadProvider extends ServiceProvider
         if (!$uploadObject->exists($path)) {
             $uploadObject->putFileAs($path, $request->file(config('upload.global.name')), $fileName, 'public');
         } else {
-            file_put_contents($uploadObject->path($path . '/' . $fileName),
-                $request->file(config('upload.global.name'))->get(), FILE_APPEND);
+            file_put_contents(
+                $uploadObject->path($path . '/' . $fileName),
+                $request->file(config('upload.global.name'))->get(),
+                FILE_APPEND
+            );
         }
 
         $data = [];
@@ -183,7 +190,7 @@ class UploadProvider extends ServiceProvider
                 if ($extendsion == 'bmp') {
                     $gdInfo = gd_info();
                     $isResize = !empty($gdInfo['WebP Support']) && $gdInfo['WebP Support'] === true;
-                }else if($extendsion == 'gif'){
+                } else if ($extendsion == 'gif') {
                     $isResize = false;
                 }
                 // 原图压缩
@@ -227,5 +234,4 @@ class UploadProvider extends ServiceProvider
     {
         return ['code' => $code, 'message' => $message, 'data' => $data];
     }
-
 }
