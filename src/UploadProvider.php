@@ -122,7 +122,7 @@ class UploadProvider extends ServiceProvider
      * @param $param
      * @return array
      */
-    public function upload($param)
+    public function upload($param, $options = [])
     {
         $request = app('request');
 
@@ -153,7 +153,11 @@ class UploadProvider extends ServiceProvider
         // 检测存放目录
         $pathType = $request->input('is_tmp', false) ? 'tmp' : 'path';
         $path = ($config[$pathType] ?? config('upload.global.' . $pathType));
-
+        
+        if (isset($options['school_id'])) {
+            $path = str_replace('{schoolId}', $options['school_id'], $path);
+        }
+        
         $d = explode('-', date("Y-y-m-d-H-i-s"));
         $d[] = time();
         $path = str_replace(["{yyyy}", "{yy}", "{mm}", "{dd}", "{hh}", "{ii}", "{ss}", "{time}"], $d, $path);
