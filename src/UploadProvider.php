@@ -154,6 +154,10 @@ class UploadProvider extends ServiceProvider
         $pathType = $request->input('is_tmp', false) ? 'tmp' : 'path';
         $path = ($config[$pathType] ?? config('upload.global.' . $pathType));
 
+        $d = explode('-', date("Y-y-m-d-H-i-s"));
+        $d[] = time();
+        $path = str_replace(["{yyyy}", "{yy}", "{mm}", "{dd}", "{hh}", "{ii}", "{ss}", "{time}"], $d, $path);
+
         // 初始化
         $uploadObject = Storage::disk(config('upload.global.filesystem', 'localFile'));
         if (!$uploadObject->exists($path)) {
