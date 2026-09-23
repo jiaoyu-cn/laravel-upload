@@ -1,17 +1,14 @@
 <?php
 namespace Githen\LaravelUpload\Controllers;
 
-use Illuminate\Http\File;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
-use Intervention\Image\Facades\Image;
+use Illuminate\Routing\Controller;
 
-class UploadController extends \App\Http\Controllers\Controller
+class UploadController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(config('upload.gloabal.auth'));
+        $this->middleware(config('upload.global.auth'));
     }
 
     /**
