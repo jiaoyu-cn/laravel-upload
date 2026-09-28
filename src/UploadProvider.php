@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\ImageManager;
 
 /**
  * 自动注册服务
@@ -204,10 +204,8 @@ class UploadProvider extends ServiceProvider
                 // 原图压缩
                 if (isset($config['resize']) && count($config['resize']) == 2) {
                     if ($isResize) {
-                        Image::make($uploadObject->path($path . '/' . $fileName))->resize($config['resize'][0], $config['resize'][1], function ($constraint) {
-                            $constraint->aspectRatio();   // 按比例调整图片大小
-                            $constraint->upsize(); // 这里如果宽度不足 时，保持原来尺寸
-                        })->save($uploadObject->path($path . '/' . $fileName));
+                        $originalPath = $uploadObject->path($path . '/' . $fileName);
+                        $this->resizeImage($originalPath, $originalPath, $config['resize'][0], $config['resize'][1]);
                     }
                 }
 
@@ -215,10 +213,12 @@ class UploadProvider extends ServiceProvider
                 if (isset($config['thumb_resize']) && count($config['thumb_resize']) == 2) {
                     $fileNameThumb = md5($tmpUid) . '_' . config('upload.global.thumb', 'thumb') . '.' . $extendsion;
                     if ($isResize) {
-                        Image::make($uploadObject->path($path . '/' . $fileName))->resize($config['thumb_resize'][0], $config['thumb_resize'][1], function ($constraint) {
-                            $constraint->aspectRatio();   // 按比例调整图片大小
-                            $constraint->upsize(); // 这里如果宽度不足 200 时，保持原来尺寸
-                        })->save($uploadObject->path($path . '/' . $fileNameThumb));
+                        $this->resizeImage(
+                            $uploadObject->path($path . '/' . $fileName),
+                            $uploadObject->path($path . '/' . $fileNameThumb),
+                            $config['thumb_resize'][0],
+                            $config['thumb_resize'][1]
+                        );
                     } else {
                         $uploadObject->copy($path . '/' . $fileName, $path . '/' . $fileNameThumb);
                     }
@@ -229,6 +229,36 @@ class UploadProvider extends ServiceProvider
         }
 
         return $this->message(0, '上传成功', $data);
+    }
+
+    /**
+     * 图片等比缩放（小图不放大），同时兼容 intervention/image v2 与 v3
+     *
+     * @param string $source 源图片路径
+     * @param string $destination 目标图片路径（与原图相同则覆盖原图）
+     * @param int|string $width 目标宽度
+     * @param int|string $height 目标高度
+     * @return void
+     */
+    private function resizeImage(string $source, string $destination, $width, $height): void
+    {
+        $width = (int) $width;
+        $height = (int) $height;
+
+        // intervention/image v3：ImageManager::read() + scaleDown()（等比缩放，小图不放大）
+        if (method_exists(ImageManager::class, 'read')) {
+            // 注意：必须用位置参数 —— 命名参数（width: / height:）是 PHP 8.0 语法，
+            // 会让整个文件在 PHP 7.3/7.4 下 Parse error（L6 项目直接崩溃）
+            ImageManager::gd()->read($source)->scaleDown($width, $height)->save($destination);
+
+            return;
+        }
+
+        // intervention/image v2：Image::make() + aspectRatio() + upsize()
+        \Intervention\Image\Facades\Image::make($source)->resize($width, $height, function ($constraint) {
+            $constraint->aspectRatio(); // 按比例调整图片大小
+            $constraint->upsize(); // 原图小于目标尺寸时保持原样
+        })->save($destination);
     }
 
     /**
