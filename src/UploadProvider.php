@@ -3,6 +3,7 @@
 namespace Githen\LaravelUpload;
 
 use Illuminate\Http\File;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -132,7 +133,14 @@ class UploadProvider extends ServiceProvider
         }
 
         // 检测类型及大小
-        $uploadFile = $request->file(config('upload.global.name'));
+        // 请求没带文件（字段名不符 / 非 multipart 提交 / 超 post_max_size 被 PHP 丢弃）时
+        // $request->file() 返回 null，多文件（file[]）时返回数组，后两种都不支持 ->isValid()，
+        // 需在此拦掉，否则抛 Call to a member function isValid() on null 直接 500
+        $fieldName = config('upload.global.name');
+        $uploadFile = $request->file($fieldName);
+        if (!$uploadFile instanceof UploadedFile) {
+            return $this->message(1, '上传失败：未获取到上传文件：' . $fieldName);
+        }
         if (!$uploadFile->isValid()) {
             return $this->message(1, '上传失败');
         }
