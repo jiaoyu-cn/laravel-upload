@@ -250,9 +250,6 @@ class UploadProvider extends ServiceProvider
      */
     private function resizeImage(string $source, string $destination, $width, $height): void
     {
-        $width = (int) $width;
-        $height = (int) $height;
-
         // intervention/image v3：ImageManager::read() + scaleDown()（等比缩放，小图不放大）
         if (method_exists(ImageManager::class, 'read')) {
             // 注意：必须用位置参数 —— 命名参数（width: / height:）是 PHP 8.0 语法，
